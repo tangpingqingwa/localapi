@@ -2,6 +2,7 @@
 
 Build contract: [SPEC.md](./SPEC.md).
 How we work: [CONTRIBUTING.md](./CONTRIBUTING.md). `main` stays buildable and testable.
+How we build: [BUILD.md](./BUILD.md) — stack, modules, tests, PR sequence.
 
 Public business listings and reviews from Google Maps (and later Apple Maps) as a credit API.
 
