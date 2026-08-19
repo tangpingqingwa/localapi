@@ -1,0 +1,77 @@
+# LocalAPI
+
+> Public place card and reviews as JSON. $19/mo, not Places SKU math.
+
+Public US/UK business listings and review texts. Independent index of public information. Not Google Places. Do not impersonate Google.
+
+Skill: US/UK only; not for navigation; ratings are public snapshots; do not impersonate Google.
+
+## URLs
+
+- REST: https://api.localapi.dev
+- MCP Streamable HTTP: https://mcp.localapi.dev/mcp
+- This file: /llms.txt
+- Server card: /.well-known/mcp/server-card.json
+
+## Auth
+
+```
+Authorization: Bearer lk_live_...
+Authorization: Bearer lk_test_...
+```
+
+Same key space for REST and MCP. No scopes. `lk_test_*` uses recorded fixtures and never hits live Maps.
+
+## MCP tools
+
+### get_place
+
+Maps to `GET /v1/places/by-url` or `GET /v1/places/{id}`. **1 credit** on success.
+
+Arguments: `url` and/or `id` (one required). Accepts Google Maps place URLs (`maps.google.com`, `google.com/maps`, `maps.app.goo.gl`) or our opaque `plc_…` id. Never send a Google `place_id` as if it were ours.
+
+`data` is the frozen place card (name, address, hours, public rating snapshot, phone if public). Ratings are public snapshots, not live busy-ness. No photos in v1.
+
+### list_reviews
+
+Maps to `GET /v1/places/{id}/reviews`. **1 credit per page**, including empty pages.
+
+Arguments: `id` (required), optional `page` (1-based, default 1), optional `lang`.
+
+Empty page is `{ reviews: [], hasMore: false }`, never 404. Never invent a review.
+
+### search_places
+
+Maps to `GET /v1/search`. Arguments: `q`, `city` or `bbox` (one of city/bbox required), optional `limit` (cap 20).
+
+**Credits:** `max(3, resultCount)` when any result, else 0. Missing city and bbox → `search_too_broad`, 0 credits. Do not advertise “near me” without a coordinate.
+
+## When not to call
+
+- Directions, traffic, Street View, or live busy-ness — we are not a Maps clone.
+- Places outside the United States and United Kingdom — expect `region_unsupported`, 0 credits.
+- A Google `place_id` as if it were our id — customers send `plc_…` or a Maps URL.
+- Impersonating Google or cloning Maps chrome — independent public-information index.
+- Hosted photos — we omit photos in v1.
+- Writing reviews or Q&A — read-only.
+
+## Errors
+
+Same envelope as REST. `creditsCharged` is always 0 on error. Tool failures set `isError: true` and keep the REST error body in `structuredContent`.
+
+| code | HTTP | retryable |
+|---|---|---|
+| invalid_request | 400 | no |
+| invalid_place_url | 400 | no |
+| search_too_broad | 400 | no |
+| unauthorized | 401 | no |
+| payment_required | 402 | no |
+| place_not_found | 404 | no |
+| region_unsupported | 422 | no |
+| daily_cap | 429 | yes |
+| upstream_blocked | 503 | yes |
+| internal | 500 | yes |
+
+## Credits
+
+Free: 100 once. Monthly $19 / 2,000. Place 1. Reviews 1 / page. Search `max(3, n)` when any hit, else 0. Failures and empty / blocked look-ups cost 0. Daily cap protects proxy (free 50 / paid 500).

@@ -5,6 +5,7 @@ import { healthRoutes } from "./http/routes/health.js";
 import { meRoutes } from "./http/routes/me.js";
 import { placesRoutes } from "./http/routes/places.js";
 import { searchRoutes } from "./http/routes/search.js";
+import { mcpRoutes } from "./mcp/server.js";
 
 export type BuildAppOptions = {
   logger?: boolean;
@@ -33,5 +34,6 @@ export async function buildApp(
   await app.register(meRoutes);
   await app.register(placesRoutes);
   await app.register(searchRoutes);
+  await app.register(mcpRoutes);
   return app;
 }
