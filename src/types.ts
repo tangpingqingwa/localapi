@@ -36,3 +36,36 @@ export type Err = {
 export type KeyPrefix = "lk_live" | "lk_test";
 
 export type Plan = "free" | "monthly" | "annual";
+
+export type CountryCode = "US" | "GB";
+
+/** 0 = Sunday … 6 = Saturday. open/close are HH:MM 24h. Unused until PR 3. */
+export type Hours = {
+  timezone: string | null;
+  weekly: Array<{ day: 0 | 1 | 2 | 3 | 4 | 5 | 6; open: string; close: string }>;
+  note: string | null;
+};
+
+export type PlaceAddress = {
+  line1: string | null;
+  city: string | null;
+  region: string | null;
+  postal: string | null;
+  country: CountryCode;
+  formatted: string;
+};
+
+/** Public place card from GET /v1/places/by-url and GET /v1/places/{id}. */
+export type Place = {
+  id: string;
+  name: string;
+  address: PlaceAddress;
+  location: { lat: number; lng: number } | null;
+  phone: string | null;
+  website: string | null;
+  rating: { average: number | null; count: number | null };
+  hours: Hours | null;
+  categories: string[];
+  mapsUrl: string;
+  fetchedAt: string;
+};

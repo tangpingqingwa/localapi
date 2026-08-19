@@ -37,6 +37,60 @@ echo "== markdown is UTF-8 text =="
 file -b --mime-encoding README.md SPEC.md CONTRIBUTING.md BUILD.md | grep -qiE 'utf-8|us-ascii' \
   || fail "docs are not UTF-8/ASCII"
 
+if [[ -d src ]]; then
+  echo "== no live Maps / reviews / search / MCP in this unit =="
+  if grep -RInE '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src >/dev/null; then
+    fail "live HTTP client call detected; fixture adapter only"
+  fi
+  if grep -RInE 'maps\.googleapis\.com|places\.googleapis\.com' src >/dev/null; then
+    fail "live Maps/Places host detected"
+  fi
+  if [[ -f src/core/reviews.ts ]] || [[ -f src/core/hours.ts ]]; then
+    fail "reviews/hours belong in PR 3"
+  fi
+  if [[ -f src/core/search.ts ]]; then
+    fail "search belongs in PR 4"
+  fi
+  if [[ -d src/mcp ]]; then
+    fail "MCP belongs in PR 5"
+  fi
+  if [[ -d src/http ]] && grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/places' src/http >/dev/null; then
+    fail "HTTP layer must call core/* only"
+  fi
+fi
+
+if [[ -f fixtures/places.json ]]; then
+  echo "== fixture catalog =="
+  python3 - "$root/fixtures/places.json" <<'PY' || fail "fixtures/places.json is not 30 valid US/UK places"
+import json, sys
+path = sys.argv[1]
+with open(path, encoding="utf-8") as f:
+    data = json.load(f)
+if not isinstance(data, list):
+    raise SystemExit("fixtures/places.json must be an array")
+if len(data) != 30:
+    raise SystemExit(f"expected 30 fixtures, got {len(data)}")
+slugs = set()
+for i, row in enumerate(data):
+    if not isinstance(row, dict):
+        raise SystemExit(f"[{i}] not an object")
+    name = row.get("name") or ""
+    addr = row.get("address") or {}
+    formatted = addr.get("formatted") or ""
+    country = addr.get("country")
+    slug = row.get("slug") or ""
+    maps = row.get("mapsUrl") or ""
+    if not name or not formatted or not slug or not maps:
+        raise SystemExit(f"[{i}] missing name/formatted/slug/mapsUrl")
+    if country not in ("US", "GB"):
+        raise SystemExit(f"[{i}] country must be US or GB")
+    if slug in slugs:
+        raise SystemExit(f"duplicate slug {slug}")
+    slugs.add(slug)
+print(f"30 fixtures ({sum(1 for r in data if r['address']['country']=='US')} US / {sum(1 for r in data if r['address']['country']=='GB')} GB)")
+PY
+fi
+
 if [[ -f package.json ]]; then
   echo "== install =="
   if [[ ! -d node_modules ]]; then
