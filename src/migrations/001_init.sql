@@ -1,0 +1,30 @@
+CREATE TABLE keys (
+  id TEXT PRIMARY KEY,
+  prefix TEXT NOT NULL,          -- lk_live / lk_test
+  hash TEXT NOT NULL UNIQUE,     -- sha256 of secret
+  plan TEXT NOT NULL DEFAULT 'free',
+  credits INTEGER NOT NULL,
+  rpm INTEGER NOT NULL DEFAULT 30,
+  daily_used INTEGER NOT NULL DEFAULT 0,
+  daily_reset TEXT NOT NULL,     -- UTC calendar day YYYY-MM-DD
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE usage_events (
+  id TEXT PRIMARY KEY,
+  key_id TEXT NOT NULL,
+  route TEXT NOT NULL,
+  credits INTEGER NOT NULL,
+  cached INTEGER NOT NULL,
+  error_code TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (key_id) REFERENCES keys(id)
+);
+
+CREATE TABLE cache_entries (
+  cache_key TEXT PRIMARY KEY,
+  kind TEXT NOT NULL,
+  body TEXT,
+  error_code TEXT,
+  expires_at TEXT NOT NULL
+);
