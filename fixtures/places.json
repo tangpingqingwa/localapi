@@ -1,0 +1,544 @@
+[
+  {
+    "slug": "franklin-bbq-austin",
+    "mapsUrl": "https://www.google.com/maps/place/Franklin+Barbecue/@30.2701266,-97.7313161,17z/data=!3m1!4b1!4m6!3m5!1s0x8644b5a4c8c4bb7b:0x1a2b3c4d5e6f7001",
+    "shortUrl": "https://maps.app.goo.gl/franklinbbq",
+    "name": "Franklin Barbecue",
+    "address": {
+      "line1": "900 E 11th St",
+      "city": "Austin",
+      "region": "TX",
+      "postal": "78702",
+      "country": "US",
+      "formatted": "900 E 11th St, Austin, TX 78702, USA"
+    },
+    "location": { "lat": 30.27013, "lng": -97.73132 },
+    "phone": "+1 512-653-1187",
+    "website": "https://franklinbbq.com",
+    "rating": { "average": 4.7, "count": 12840 },
+    "categories": ["Barbecue restaurant", "Restaurant"]
+  },
+  {
+    "slug": "la-barbecue-austin",
+    "mapsUrl": "https://maps.google.com/maps/place/la+barbecue/@30.2568,-97.7221,17z",
+    "name": "la barbecue",
+    "address": {
+      "line1": "2401 E Cesar Chavez St",
+      "city": "Austin",
+      "region": "TX",
+      "postal": "78702",
+      "country": "US",
+      "formatted": "2401 E Cesar Chavez St, Austin, TX 78702, USA"
+    },
+    "location": { "lat": 30.25681, "lng": -97.72214 },
+    "phone": "+1 512-605-6981",
+    "website": "https://labarbecue.com",
+    "rating": { "average": 4.6, "count": 6420 },
+    "categories": ["Barbecue restaurant"]
+  },
+  {
+    "slug": "torchys-tacos-south-congress",
+    "mapsUrl": "https://www.google.com/maps/place/Torchy's+Tacos/@30.2498,-97.7501,17z",
+    "name": "Torchy's Tacos",
+    "address": {
+      "line1": "1311 S Congress Ave",
+      "city": "Austin",
+      "region": "TX",
+      "postal": "78704",
+      "country": "US",
+      "formatted": "1311 S Congress Ave, Austin, TX 78704, USA"
+    },
+    "location": { "lat": 30.24982, "lng": -97.75011 },
+    "phone": "+1 512-916-9235",
+    "website": "https://torchystacos.com",
+    "rating": { "average": 4.5, "count": 8912 },
+    "categories": ["Taco restaurant", "Tex-Mex restaurant"]
+  },
+  {
+    "slug": "home-slice-pizza-austin",
+    "mapsUrl": "https://www.google.com/maps/place/Home+Slice+Pizza/@30.2492,-97.7494,17z",
+    "name": "Home Slice Pizza",
+    "address": {
+      "line1": "1415 S Congress Ave",
+      "city": "Austin",
+      "region": "TX",
+      "postal": "78704",
+      "country": "US",
+      "formatted": "1415 S Congress Ave, Austin, TX 78704, USA"
+    },
+    "location": { "lat": 30.24921, "lng": -97.74938 },
+    "phone": "+1 512-444-7437",
+    "website": "https://homeslicepizza.com",
+    "rating": { "average": 4.6, "count": 7340 },
+    "categories": ["Pizza restaurant"]
+  },
+  {
+    "slug": "bookpeople-austin",
+    "mapsUrl": "https://www.google.com/maps/place/BookPeople/@30.2719,-97.7531,17z",
+    "name": "BookPeople",
+    "address": {
+      "line1": "603 N Lamar Blvd",
+      "city": "Austin",
+      "region": "TX",
+      "postal": "78703",
+      "country": "US",
+      "formatted": "603 N Lamar Blvd, Austin, TX 78703, USA"
+    },
+    "location": { "lat": 30.27194, "lng": -97.75308 },
+    "phone": "+1 512-472-5050",
+    "website": "https://bookpeople.com",
+    "rating": { "average": 4.8, "count": 5120 },
+    "categories": ["Book store"]
+  },
+  {
+    "slug": "katzs-delicatessen-nyc",
+    "mapsUrl": "https://www.google.com/maps/place/Katz's+Delicatessen/@40.7223,-73.9874,17z",
+    "name": "Katz's Delicatessen",
+    "address": {
+      "line1": "205 E Houston St",
+      "city": "New York",
+      "region": "NY",
+      "postal": "10002",
+      "country": "US",
+      "formatted": "205 E Houston St, New York, NY 10002, USA"
+    },
+    "location": { "lat": 40.72228, "lng": -73.98743 },
+    "phone": "+1 212-254-2246",
+    "website": "https://katzsdelicatessen.com",
+    "rating": { "average": 4.5, "count": 24110 },
+    "categories": ["Delicatessen", "Restaurant"]
+  },
+  {
+    "slug": "joe-coffee-west-village",
+    "mapsUrl": "https://maps.google.com/?cid=1000000000000000007",
+    "name": "Joe Coffee Company",
+    "address": {
+      "line1": "141 Waverly Pl",
+      "city": "New York",
+      "region": "NY",
+      "postal": "10014",
+      "country": "US",
+      "formatted": "141 Waverly Pl, New York, NY 10014, USA"
+    },
+    "location": { "lat": 40.73211, "lng": -74.00042 },
+    "phone": "+1 212-924-7400",
+    "website": "https://joecoffeecompany.com",
+    "rating": { "average": 4.4, "count": 1860 },
+    "categories": ["Coffee shop"]
+  },
+  {
+    "slug": "levain-bakery-w74",
+    "mapsUrl": "https://www.google.com/maps/place/Levain+Bakery/@40.7799,-73.9804,17z",
+    "name": "Levain Bakery",
+    "address": {
+      "line1": "167 W 74th St",
+      "city": "New York",
+      "region": "NY",
+      "postal": "10023",
+      "country": "US",
+      "formatted": "167 W 74th St, New York, NY 10023, USA"
+    },
+    "location": { "lat": 40.77988, "lng": -73.98041 },
+    "phone": "+1 212-874-6080",
+    "website": "https://levainbakery.com",
+    "rating": { "average": 4.6, "count": 9870 },
+    "categories": ["Bakery"]
+  },
+  {
+    "slug": "strand-bookstore-nyc",
+    "mapsUrl": "https://www.google.com/maps/place/The+Strand+Bookstore/@40.7333,-73.9908,17z",
+    "name": "The Strand Bookstore",
+    "address": {
+      "line1": "828 Broadway",
+      "city": "New York",
+      "region": "NY",
+      "postal": "10003",
+      "country": "US",
+      "formatted": "828 Broadway, New York, NY 10003, USA"
+    },
+    "location": { "lat": 40.73328, "lng": -73.99081 },
+    "phone": "+1 212-473-1452",
+    "website": "https://strandbooks.com",
+    "rating": { "average": 4.6, "count": 15440 },
+    "categories": ["Book store"]
+  },
+  {
+    "slug": "russ-and-daughters-nyc",
+    "mapsUrl": "https://www.google.com/maps/place/Russ+%26+Daughters/@40.7226,-73.9883,17z",
+    "name": "Russ & Daughters",
+    "address": {
+      "line1": "179 E Houston St",
+      "city": "New York",
+      "region": "NY",
+      "postal": "10002",
+      "country": "US",
+      "formatted": "179 E Houston St, New York, NY 10002, USA"
+    },
+    "location": { "lat": 40.72261, "lng": -73.98829 },
+    "phone": "+1 212-475-4880",
+    "website": "https://russanddaughters.com",
+    "rating": { "average": 4.7, "count": 6230 },
+    "categories": ["Appetizer store", "Jewish restaurant"]
+  },
+  {
+    "slug": "tartine-bakery-sf",
+    "mapsUrl": "https://www.google.com/maps/place/Tartine+Bakery/@37.7614,-122.4241,17z",
+    "name": "Tartine Bakery",
+    "address": {
+      "line1": "600 Guerrero St",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94110",
+      "country": "US",
+      "formatted": "600 Guerrero St, San Francisco, CA 94110, USA"
+    },
+    "location": { "lat": 37.76142, "lng": -122.42409 },
+    "phone": "+1 415-487-2600",
+    "website": "https://tartinebakery.com",
+    "rating": { "average": 4.5, "count": 8120 },
+    "categories": ["Bakery", "Cafe"]
+  },
+  {
+    "slug": "bi-rite-market-sf",
+    "mapsUrl": "https://www.google.com/maps/place/Bi-Rite+Market/@37.7615,-122.4255,17z",
+    "name": "Bi-Rite Market",
+    "address": {
+      "line1": "3639 18th St",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94110",
+      "country": "US",
+      "formatted": "3639 18th St, San Francisco, CA 94110, USA"
+    },
+    "location": { "lat": 37.76151, "lng": -122.42548 },
+    "phone": "+1 415-241-9760",
+    "website": "https://biritemarket.com",
+    "rating": { "average": 4.7, "count": 2980 },
+    "categories": ["Grocery store"]
+  },
+  {
+    "slug": "city-lights-bookstore-sf",
+    "mapsUrl": "https://www.google.com/maps/place/City+Lights+Booksellers/@37.7976,-122.4066,17z",
+    "name": "City Lights Booksellers & Publishers",
+    "address": {
+      "line1": "261 Columbus Ave",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94133",
+      "country": "US",
+      "formatted": "261 Columbus Ave, San Francisco, CA 94133, USA"
+    },
+    "location": { "lat": 37.79762, "lng": -122.40658 },
+    "phone": "+1 415-362-8193",
+    "website": "https://citylights.com",
+    "rating": { "average": 4.7, "count": 5410 },
+    "categories": ["Book store"]
+  },
+  {
+    "slug": "blue-bottle-mint-sf",
+    "mapsUrl": "https://www.google.com/maps/place/Blue+Bottle+Coffee/@37.7763,-122.4232,17z",
+    "name": "Blue Bottle Coffee",
+    "address": {
+      "line1": "315 Linden St",
+      "city": "San Francisco",
+      "region": "CA",
+      "postal": "94102",
+      "country": "US",
+      "formatted": "315 Linden St, San Francisco, CA 94102, USA"
+    },
+    "location": { "lat": 37.77634, "lng": -122.42321 },
+    "phone": null,
+    "website": "https://bluebottlecoffee.com",
+    "rating": { "average": 4.4, "count": 3670 },
+    "categories": ["Coffee shop"]
+  },
+  {
+    "slug": "pike-place-chowder-seattle",
+    "mapsUrl": "https://www.google.com/maps/place/Pike+Place+Chowder/@47.6094,-122.3411,17z",
+    "name": "Pike Place Chowder",
+    "address": {
+      "line1": "1530 Post Alley",
+      "city": "Seattle",
+      "region": "WA",
+      "postal": "98101",
+      "country": "US",
+      "formatted": "1530 Post Alley, Seattle, WA 98101, USA"
+    },
+    "location": { "lat": 47.60941, "lng": -122.34112 },
+    "phone": "+1 206-267-2537",
+    "website": "https://pikeplacechowder.com",
+    "rating": { "average": 4.6, "count": 11280 },
+    "categories": ["Seafood restaurant"]
+  },
+  {
+    "slug": "elliott-bay-book-seattle",
+    "mapsUrl": "https://www.google.com/maps/place/Elliott+Bay+Book+Company/@47.6145,-122.3196,17z",
+    "name": "Elliott Bay Book Company",
+    "address": {
+      "line1": "1521 10th Ave",
+      "city": "Seattle",
+      "region": "WA",
+      "postal": "98122",
+      "country": "US",
+      "formatted": "1521 10th Ave, Seattle, WA 98122, USA"
+    },
+    "location": { "lat": 47.61452, "lng": -122.31958 },
+    "phone": "+1 206-624-6600",
+    "website": "https://elliottbaybook.com",
+    "rating": { "average": 4.8, "count": 4210 },
+    "categories": ["Book store"]
+  },
+  {
+    "slug": "pats-king-of-steaks-philly",
+    "mapsUrl": "https://www.google.com/maps/place/Pat's+King+of+Steaks/@39.9332,-75.1591,17z",
+    "name": "Pat's King of Steaks",
+    "address": {
+      "line1": "1237 E Passyunk Ave",
+      "city": "Philadelphia",
+      "region": "PA",
+      "postal": "19147",
+      "country": "US",
+      "formatted": "1237 E Passyunk Ave, Philadelphia, PA 19147, USA"
+    },
+    "location": { "lat": 39.93321, "lng": -75.15909 },
+    "phone": "+1 215-468-1546",
+    "website": "https://patskingofsteaks.com",
+    "rating": { "average": 4.2, "count": 18760 },
+    "categories": ["Cheesesteak restaurant"]
+  },
+  {
+    "slug": "reading-terminal-market-philly",
+    "mapsUrl": "https://www.google.com/maps/place/Reading+Terminal+Market/@39.9533,-75.1593,17z",
+    "name": "Reading Terminal Market",
+    "address": {
+      "line1": "51 N 12th St",
+      "city": "Philadelphia",
+      "region": "PA",
+      "postal": "19107",
+      "country": "US",
+      "formatted": "51 N 12th St, Philadelphia, PA 19107, USA"
+    },
+    "location": { "lat": 39.95328, "lng": -75.15931 },
+    "phone": "+1 215-922-2317",
+    "website": "https://readingterminalmarket.org",
+    "rating": { "average": 4.6, "count": 22340 },
+    "categories": ["Public market", "Food court"]
+  },
+  {
+    "slug": "portillos-clark-chicago",
+    "mapsUrl": "https://www.google.com/maps/place/Portillo's/@41.9318,-87.6446,17z",
+    "name": "Portillo's",
+    "address": {
+      "line1": "100 W Ontario St",
+      "city": "Chicago",
+      "region": "IL",
+      "postal": "60654",
+      "country": "US",
+      "formatted": "100 W Ontario St, Chicago, IL 60654, USA"
+    },
+    "location": { "lat": 41.89341, "lng": -87.63152 },
+    "phone": "+1 312-587-8910",
+    "website": "https://portillos.com",
+    "rating": { "average": 4.4, "count": 16450 },
+    "categories": ["Hot dog restaurant", "American restaurant"]
+  },
+  {
+    "slug": "lou-malnatis-river-north",
+    "mapsUrl": "https://www.google.com/maps/place/Lou+Malnati's+Pizzeria/@41.8903,-87.6338,17z",
+    "name": "Lou Malnati's Pizzeria",
+    "address": {
+      "line1": "439 N Wells St",
+      "city": "Chicago",
+      "region": "IL",
+      "postal": "60654",
+      "country": "US",
+      "formatted": "439 N Wells St, Chicago, IL 60654, USA"
+    },
+    "location": { "lat": 41.89029, "lng": -87.63381 },
+    "phone": "+1 312-828-9800",
+    "website": "https://loumalnatis.com",
+    "rating": { "average": 4.5, "count": 9870 },
+    "categories": ["Pizza restaurant"]
+  },
+  {
+    "slug": "dishoom-covent-garden",
+    "mapsUrl": "https://www.google.com/maps/place/Dishoom+Covent+Garden/@51.5124,-0.1269,17z",
+    "shortUrl": "https://maps.app.goo.gl/dishoomcg",
+    "name": "Dishoom Covent Garden",
+    "address": {
+      "line1": "12 Upper St Martin's Ln",
+      "city": "London",
+      "region": "England",
+      "postal": "WC2H 9FB",
+      "country": "GB",
+      "formatted": "12 Upper St Martin's Ln, London WC2H 9FB, United Kingdom"
+    },
+    "location": { "lat": 51.51241, "lng": -0.12688 },
+    "phone": "+44 20 7420 9320",
+    "website": "https://www.dishoom.com",
+    "rating": { "average": 4.6, "count": 18420 },
+    "categories": ["Indian restaurant"]
+  },
+  {
+    "slug": "borough-market-london",
+    "mapsUrl": "https://www.google.com/maps/place/Borough+Market/@51.5055,-0.0910,17z",
+    "name": "Borough Market",
+    "address": {
+      "line1": "8 Southwark St",
+      "city": "London",
+      "region": "England",
+      "postal": "SE1 1TL",
+      "country": "GB",
+      "formatted": "8 Southwark St, London SE1 1TL, United Kingdom"
+    },
+    "location": { "lat": 51.50549, "lng": -0.09098 },
+    "phone": "+44 20 7407 1002",
+    "website": "https://boroughmarket.org.uk",
+    "rating": { "average": 4.6, "count": 41230 },
+    "categories": ["Market", "Food market"]
+  },
+  {
+    "slug": "monmouth-coffee-borough",
+    "mapsUrl": "https://www.google.com/maps/place/Monmouth+Coffee+Company/@51.5056,-0.0914,17z",
+    "name": "Monmouth Coffee Company",
+    "address": {
+      "line1": "2 Park St",
+      "city": "London",
+      "region": "England",
+      "postal": "SE1 9AB",
+      "country": "GB",
+      "formatted": "2 Park St, London SE1 9AB, United Kingdom"
+    },
+    "location": { "lat": 51.50562, "lng": -0.09141 },
+    "phone": "+44 20 7232 3010",
+    "website": "https://www.monmouthcoffee.co.uk",
+    "rating": { "average": 4.6, "count": 3560 },
+    "categories": ["Coffee shop"]
+  },
+  {
+    "slug": "neals-yard-dairy-london",
+    "mapsUrl": "https://www.google.com/maps/place/Neal's+Yard+Dairy/@51.5144,-0.1263,17z",
+    "name": "Neal's Yard Dairy",
+    "address": {
+      "line1": "17 Shorts Gardens",
+      "city": "London",
+      "region": "England",
+      "postal": "WC2H 9AT",
+      "country": "GB",
+      "formatted": "17 Shorts Gardens, London WC2H 9AT, United Kingdom"
+    },
+    "location": { "lat": 51.51439, "lng": -0.12628 },
+    "phone": "+44 20 7240 5700",
+    "website": "https://www.nealsyarddairy.co.uk",
+    "rating": { "average": 4.7, "count": 2140 },
+    "categories": ["Cheese shop"]
+  },
+  {
+    "slug": "fortnum-and-mason-piccadilly",
+    "mapsUrl": "https://www.google.com/maps/place/Fortnum+%26+Mason/@51.5083,-0.1384,17z",
+    "name": "Fortnum & Mason",
+    "address": {
+      "line1": "181 Piccadilly",
+      "city": "London",
+      "region": "England",
+      "postal": "W1A 1ER",
+      "country": "GB",
+      "formatted": "181 Piccadilly, London W1A 1ER, United Kingdom"
+    },
+    "location": { "lat": 51.50831, "lng": -0.13839 },
+    "phone": "+44 20 7734 8040",
+    "website": "https://www.fortnumandmason.com",
+    "rating": { "average": 4.6, "count": 19870 },
+    "categories": ["Department store", "Tea shop"]
+  },
+  {
+    "slug": "daunt-books-marylebone",
+    "mapsUrl": "https://www.google.com/maps/place/Daunt+Books/@51.5206,-0.1518,17z",
+    "name": "Daunt Books",
+    "address": {
+      "line1": "83-84 Marylebone High St",
+      "city": "London",
+      "region": "England",
+      "postal": "W1U 4QW",
+      "country": "GB",
+      "formatted": "83-84 Marylebone High St, London W1U 4QW, United Kingdom"
+    },
+    "location": { "lat": 51.52058, "lng": -0.15179 },
+    "phone": "+44 20 7224 2295",
+    "website": "https://www.dauntbooks.co.uk",
+    "rating": { "average": 4.8, "count": 4870 },
+    "categories": ["Book store"]
+  },
+  {
+    "slug": "the-ivy-west-street",
+    "mapsUrl": "https://maps.google.com/maps?cid=2000000000000000027",
+    "name": "The Ivy",
+    "address": {
+      "line1": "1-5 West St",
+      "city": "London",
+      "region": "England",
+      "postal": "WC2H 9NQ",
+      "country": "GB",
+      "formatted": "1-5 West St, London WC2H 9NQ, United Kingdom"
+    },
+    "location": { "lat": 51.51272, "lng": -0.12811 },
+    "phone": "+44 20 7836 4751",
+    "website": "https://the-ivy.co.uk",
+    "rating": { "average": 4.4, "count": 6230 },
+    "categories": ["British restaurant"]
+  },
+  {
+    "slug": "brewdog-soho",
+    "mapsUrl": "https://www.google.com/maps/place/BrewDog+Soho/@51.5139,-0.1346,17z",
+    "name": "BrewDog Soho",
+    "address": {
+      "line1": "21 Poland St",
+      "city": "London",
+      "region": "England",
+      "postal": "W1F 8QG",
+      "country": "GB",
+      "formatted": "21 Poland St, London W1F 8QG, United Kingdom"
+    },
+    "location": { "lat": 51.51391, "lng": -0.13458 },
+    "phone": "+44 20 3960 7760",
+    "website": "https://www.brewdog.com",
+    "rating": { "average": 4.3, "count": 2780 },
+    "categories": ["Bar", "Pub"]
+  },
+  {
+    "slug": "waterstones-piccadilly",
+    "mapsUrl": "https://www.google.com/maps/place/Waterstones+Piccadilly/@51.5093,-0.1358,17z",
+    "name": "Waterstones Piccadilly",
+    "address": {
+      "line1": "203-206 Piccadilly",
+      "city": "London",
+      "region": "England",
+      "postal": "W1J 9HD",
+      "country": "GB",
+      "formatted": "203-206 Piccadilly, London W1J 9HD, United Kingdom"
+    },
+    "location": { "lat": 51.50928, "lng": -0.13579 },
+    "phone": "+44 20 7851 2400",
+    "website": "https://www.waterstones.com",
+    "rating": { "average": 4.6, "count": 9120 },
+    "categories": ["Book store"]
+  },
+  {
+    "slug": "gaucho-piccadilly",
+    "mapsUrl": "https://www.google.com/maps/place/Gaucho+Piccadilly/@51.5098,-0.1372,17z",
+    "name": "Gaucho Piccadilly",
+    "address": {
+      "line1": "25 Swallow St",
+      "city": "London",
+      "region": "England",
+      "postal": "W1B 4QR",
+      "country": "GB",
+      "formatted": "25 Swallow St, London W1B 4QR, United Kingdom"
+    },
+    "location": { "lat": 51.50979, "lng": -0.13718 },
+    "phone": "+44 20 7734 4040",
+    "website": "https://www.gauchorestaurants.com",
+    "rating": { "average": 4.4, "count": 3450 },
+    "categories": ["Argentinian restaurant", "Steak house"]
+  }
+]

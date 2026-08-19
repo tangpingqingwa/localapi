@@ -3,6 +3,7 @@ import { bootstrapKeyIfEmpty } from "./billing/keys.js";
 import { openDatabase, type LocalApiDb } from "./db.js";
 import { healthRoutes } from "./http/routes/health.js";
 import { meRoutes } from "./http/routes/me.js";
+import { placesRoutes } from "./http/routes/places.js";
 
 export type BuildAppOptions = {
   logger?: boolean;
@@ -29,5 +30,6 @@ export async function buildApp(
   }
   await app.register(healthRoutes);
   await app.register(meRoutes);
+  await app.register(placesRoutes);
   return app;
 }
