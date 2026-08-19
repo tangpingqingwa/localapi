@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Offline gate for main. Must exit 0 on a clean clone with no secrets.
-# When application code lands, add unit/contract tests here. Do not delete the
-# contract checks. Do not require live third-party networks.
+# Contract checks stay; once package.json exists we also typecheck and run
+# node:test. Do not require live third-party networks (no Google / Maps).
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -34,7 +34,33 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 fi
 
 echo "== markdown is UTF-8 text =="
-file -b --mime-encoding README.md SPEC.md CONTRIBUTING.md | grep -qiE 'utf-8|us-ascii' \
+file -b --mime-encoding README.md SPEC.md CONTRIBUTING.md BUILD.md | grep -qiE 'utf-8|us-ascii' \
   || fail "docs are not UTF-8/ASCII"
+
+if [[ -f package.json ]]; then
+  echo "== install =="
+  if [[ ! -d node_modules ]]; then
+    if [[ -f package-lock.json ]]; then
+      npm ci
+    else
+      npm install
+    fi
+  fi
+
+  echo "== tsc --noEmit =="
+  npx tsc --noEmit
+
+  echo "== unit tests =="
+  # Quoted so bash 3.2 does not eat **; Node 22's test runner expands the glob.
+  test_log="$(mktemp)"
+  trap 'rm -f "$test_log"' EXIT
+  set +e
+  npx tsx --test --test-reporter spec 'tests/**/*.test.ts' | tee "$test_log"
+  test_status=${PIPESTATUS[0]}
+  set -e
+  [[ $test_status -eq 0 ]] || fail "unit tests failed"
+  grep -Eq 'tests[[:space:]]+[1-9][0-9]*' "$test_log" \
+    || fail "test runner reported 0 tests"
+fi
 
 echo "OK: buildable and testable"
