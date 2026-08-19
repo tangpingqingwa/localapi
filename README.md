@@ -1,5 +1,7 @@
 # LocalAPI
 
+Build contract: [SPEC.md](./SPEC.md).
+
 Public business listings and reviews from Google Maps (and later Apple Maps) as a credit API.
 
 Google Places is official and metered like a luxury good. Most people need “reviews for this shop” or “businesses in this box,” not the whole Places platform.
