@@ -38,24 +38,27 @@ file -b --mime-encoding README.md SPEC.md CONTRIBUTING.md BUILD.md | grep -qiE '
   || fail "docs are not UTF-8/ASCII"
 
 if [[ -d src ]]; then
-  echo "== no live Maps / reviews / search / MCP in this unit =="
+  echo "== no live Maps / search / MCP in this unit =="
   if grep -RInE '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src >/dev/null; then
     fail "live HTTP client call detected; fixture adapter only"
   fi
   if grep -RInE 'maps\.googleapis\.com|places\.googleapis\.com' src >/dev/null; then
     fail "live Maps/Places host detected"
   fi
-  if [[ -f src/core/reviews.ts ]] || [[ -f src/core/hours.ts ]]; then
-    fail "reviews/hours belong in PR 3"
-  fi
+  [[ -f src/core/reviews.ts ]] || fail "missing src/core/reviews.ts"
+  [[ -f src/core/hours.ts ]] || fail "missing src/core/hours.ts"
   if [[ -f src/core/search.ts ]]; then
     fail "search belongs in PR 4"
   fi
   if [[ -d src/mcp ]]; then
     fail "MCP belongs in PR 5"
   fi
-  if [[ -d src/http ]] && grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/places' src/http >/dev/null; then
-    fail "HTTP layer must call core/* only"
+  if [[ -d src/http ]]; then
+    if grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/' src/http >/dev/null; then
+      fail "HTTP layer must call core/* only"
+    fi
+    grep -RInE 'from ["'\''][^"'\'']*core/' src/http >/dev/null \
+      || fail "HTTP layer must import from core/*"
   fi
 fi
 

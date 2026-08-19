@@ -41,7 +41,7 @@ function assertPlaceCard(place: Place): void {
   assert.ok(place.name.length > 0);
   assert.ok(place.address.formatted.length > 0);
   assert.ok(place.address.country === "US" || place.address.country === "GB");
-  assert.equal(place.hours, null);
+  assert.ok(place.hours === null || Array.isArray(place.hours.weekly));
   assert.ok(Array.isArray(place.categories));
   assert.match(place.fetchedAt, /^\d{4}-\d{2}-\d{2}T/);
   assert.ok(place.mapsUrl.startsWith("http"));
@@ -183,7 +183,8 @@ test("GET /v1/places/by-url fixture → 200 name + address, 1 credit", async () 
   assertPlaceCard(body.data);
   assert.equal(body.data.name, "Franklin Barbecue");
   assert.equal(body.data.address.formatted, "900 E 11th St, Austin, TX 78702, USA");
-  assert.equal(body.data.hours, null);
+  assert.ok(body.data.hours !== null);
+  assert.equal(body.data.hours.timezone, "America/Chicago");
   assert.equal(body.meta.creditsCharged, 1);
   assert.equal(body.meta.cached, false);
   assert.match(body.meta.requestId, /^req_/);
