@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { CountryCode, Place, PlaceAddress } from "../types.js";
 import { PlaceError } from "./errors.js";
+import { getHoursBySlug } from "./hours.js";
 
 export const PLACE_FIXTURE_COUNT = 30;
 export const PLACE_ID_PREFIX = "plc_" as const;
@@ -351,7 +352,7 @@ function toPlace(fixture: PlaceFixture, now: Date): Place {
     phone: fixture.phone,
     website: fixture.website,
     rating: { ...fixture.rating },
-    hours: null,
+    hours: getHoursBySlug(fixture.slug),
     categories: [...fixture.categories],
     mapsUrl: fixture.mapsUrl,
     fetchedAt: now.toISOString(),
@@ -411,7 +412,7 @@ export function getPlaceByUrl(url: string, now: Date = new Date()): Place {
   return toPlace(fixture, now);
 }
 
-export function getPlaceById(id: string, now: Date = new Date()): Place {
+export function getPlaceFixtureById(id: string): PlaceFixture {
   const trimmed = id.trim();
   if (trimmed === "") {
     throw new PlaceError("invalid_request", "Place id is required.");
@@ -420,5 +421,9 @@ export function getPlaceById(id: string, now: Date = new Date()): Place {
   if (fixture === undefined) {
     throw new PlaceError("place_not_found", "Place not found.");
   }
-  return toPlace(fixture, now);
+  return fixture;
+}
+
+export function getPlaceById(id: string, now: Date = new Date()): Place {
+  return toPlace(getPlaceFixtureById(id), now);
 }

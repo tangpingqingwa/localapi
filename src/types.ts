@@ -39,11 +39,37 @@ export type Plan = "free" | "monthly" | "annual";
 
 export type CountryCode = "US" | "GB";
 
-/** 0 = Sunday … 6 = Saturday. open/close are HH:MM 24h. Unused until PR 3. */
+/** 0 = Sunday … 6 = Saturday. */
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+/** open/close are HH:MM 24h. Overnight is two intervals; close may be 24:00. */
+export type HoursInterval = {
+  day: Weekday;
+  open: string;
+  close: string;
+};
+
 export type Hours = {
   timezone: string | null;
-  weekly: Array<{ day: 0 | 1 | 2 | 3 | 4 | 5 | 6; open: string; close: string }>;
+  weekly: HoursInterval[];
   note: string | null;
+};
+
+/** Public review row from GET /v1/places/{id}/reviews. */
+export type Review = {
+  id: string | null;
+  author: string | null;
+  stars: number;
+  text: string;
+  createdAt: string | null;
+  language: string | null;
+};
+
+export type ReviewPage = {
+  page: number;
+  hasMore: boolean;
+  language: string | null;
+  reviews: Review[];
 };
 
 export type PlaceAddress = {
