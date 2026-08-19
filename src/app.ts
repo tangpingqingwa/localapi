@@ -4,6 +4,7 @@ import { openDatabase, type LocalApiDb } from "./db.js";
 import { healthRoutes } from "./http/routes/health.js";
 import { meRoutes } from "./http/routes/me.js";
 import { placesRoutes } from "./http/routes/places.js";
+import { searchRoutes } from "./http/routes/search.js";
 
 export type BuildAppOptions = {
   logger?: boolean;
@@ -31,5 +32,6 @@ export async function buildApp(
   await app.register(healthRoutes);
   await app.register(meRoutes);
   await app.register(placesRoutes);
+  await app.register(searchRoutes);
   return app;
 }

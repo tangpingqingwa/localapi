@@ -1,7 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type { LocalApiDb } from "../db.js";
 import type { ErrorCode } from "../types.js";
-import type { Key } from "./keys.js";
+import { addDailyUsed, dailyRemaining, type Key } from "./keys.js";
+
+export type ChargeFailure = "payment_required" | "daily_cap";
+export type ChargeResult = { ok: true; key: Key } | { ok: false; code: ChargeFailure };
 
 export function chargeCredits(
   db: LocalApiDb,
@@ -52,6 +55,31 @@ export function chargeCredits(
     new Date().toISOString(),
   );
   return { ...input.key, credits: updated.credits };
+}
+
+export function tryCharge(
+  db: LocalApiDb,
+  key: Key,
+  credits: number,
+  route: string,
+): ChargeResult {
+  if (key.credits < credits) {
+    return { ok: false, code: "payment_required" };
+  }
+  if (credits > 0 && dailyRemaining(key) < credits) {
+    return { ok: false, code: "daily_cap" };
+  }
+  const apply = db.transaction((): ChargeResult => {
+    const next = chargeCredits(db, { key, route, credits, cached: false });
+    if (next.credits === key.credits && credits > 0) {
+      return { ok: false, code: "payment_required" };
+    }
+    if (credits === 0) {
+      return { ok: true, key: next };
+    }
+    return { ok: true, key: addDailyUsed(db, next, credits) };
+  });
+  return apply();
 }
 
 export function tryChargeOrPaymentRequired(
