@@ -60,7 +60,8 @@ Daily cap on key: default free 50 / paid 500. Exceed → `daily_cap` 429.
 - **Acceptance:** SPEC 3, 4, 6
 
 ### PR 5: MCP
+- **Files:** `src/mcp/server.ts`, `src/mcp/tools.ts`, `llms.txt`, `tests/mcp.test.ts`
 - **Dependencies:** PR 4
-- **Tools:** get_place, list_reviews, search_places
+- **Tools:** get_place, list_reviews, search_places — wrap `core/*` 1:1. Fixtures only.
 
 No photo CDN in any PR. Omit photos in v1.

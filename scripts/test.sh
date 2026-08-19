@@ -13,7 +13,7 @@ fail() {
 }
 
 echo "== contract files =="
-for f in README.md SPEC.md BUILD.md CONTRIBUTING.md scripts/test.sh; do
+for f in README.md SPEC.md BUILD.md CONTRIBUTING.md scripts/test.sh llms.txt; do
   [[ -f "$f" ]] || fail "missing $f"
   [[ -s "$f" ]] || fail "empty $f"
 done
@@ -38,7 +38,7 @@ file -b --mime-encoding README.md SPEC.md CONTRIBUTING.md BUILD.md | grep -qiE '
   || fail "docs are not UTF-8/ASCII"
 
 if [[ -d src ]]; then
-  echo "== no live Maps / MCP in this unit =="
+  echo "== no live Maps =="
   if grep -RInE '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src >/dev/null; then
     fail "live HTTP client call detected; fixture adapter only"
   fi
@@ -49,9 +49,6 @@ if [[ -d src ]]; then
   [[ -f src/core/hours.ts ]] || fail "missing src/core/hours.ts"
   [[ -f src/core/search.ts ]] || fail "missing src/core/search.ts"
   [[ -f tests/search.test.ts ]] || fail "missing tests/search.test.ts"
-  if [[ -d src/mcp ]]; then
-    fail "MCP belongs in PR 5"
-  fi
   if [[ -d src/http ]]; then
     if grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/' src/http >/dev/null; then
       fail "HTTP layer must call core/* only"
@@ -59,6 +56,32 @@ if [[ -d src ]]; then
     grep -RInE 'from ["'\''][^"'\'']*core/' src/http >/dev/null \
       || fail "HTTP layer must import from core/*"
   fi
+fi
+
+echo "== MCP tools (PR 5) =="
+[[ -f src/mcp/server.ts ]] || fail "missing src/mcp/server.ts"
+[[ -f src/mcp/tools.ts ]] || fail "missing src/mcp/tools.ts"
+[[ -f tests/mcp.test.ts ]] || fail "missing tests/mcp.test.ts"
+[[ -f llms.txt ]] || fail "missing llms.txt"
+grep -q 'get_place' src/mcp/tools.ts || fail "src/mcp/tools.ts missing get_place"
+grep -q 'list_reviews' src/mcp/tools.ts || fail "src/mcp/tools.ts missing list_reviews"
+grep -q 'search_places' src/mcp/tools.ts || fail "src/mcp/tools.ts missing search_places"
+grep -q 'get_place' llms.txt || fail "llms.txt missing get_place"
+grep -q 'list_reviews' llms.txt || fail "llms.txt missing list_reviews"
+grep -q 'search_places' llms.txt || fail "llms.txt missing search_places"
+grep -q 'When not to call' llms.txt || fail "llms.txt missing when-not-to-call"
+grep -qi 'not for navigation' llms.txt || fail "llms.txt missing navigation disclaimer"
+grep -qi 'impersonate' llms.txt || fail "llms.txt missing impersonation disclaimer"
+if grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/' src/mcp >/dev/null; then
+  fail "MCP layer must call core/* only"
+fi
+grep -RInE 'from ["'\''][^"'\'']*core/' src/mcp >/dev/null \
+  || fail "MCP layer must import from core/*"
+if grep -RInE --include='*.ts' '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src/mcp >/dev/null; then
+  fail "live HTTP client call in src/mcp; fixtures only"
+fi
+if grep -RInE --include='*.ts' 'maps\.googleapis\.com|places\.googleapis\.com' src/mcp >/dev/null; then
+  fail "src/mcp must not call live Maps/Places hosts"
 fi
 
 if [[ -f fixtures/places.json ]]; then

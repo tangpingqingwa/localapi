@@ -165,9 +165,17 @@ Photos: do not store; omit or URL-only if unavoidable. Prefer omit in v1 to redu
 
 ## 7. MCP
 
-`get_place`, `list_reviews`, `search_places`.
+Streamable HTTP at `POST /mcp`. Same Bearer keys as REST. Tools wrap `core/*` 1:1:
+
+| tool | REST | credits |
+|---|---|---|
+| `get_place` | `GET /v1/places/by-url` or `GET /v1/places/{id}` | 1 |
+| `list_reviews` | `GET /v1/places/{id}/reviews` | 1 / page |
+| `search_places` | `GET /v1/search` | `max(3, n)` if any hit, else 0 |
 
 Skill: US/UK; not for navigation; ratings are public snapshots; do not impersonate Google.
+
+Public `GET /llms.txt` and `GET /.well-known/mcp/server-card.json`. Tool failures stay JSON-RPC HTTP 200 with `isError` and the REST error envelope in `structuredContent`. Auth failures stay the REST 401 envelope.
 
 ---
 
