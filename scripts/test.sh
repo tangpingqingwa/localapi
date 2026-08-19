@@ -38,7 +38,7 @@ file -b --mime-encoding README.md SPEC.md CONTRIBUTING.md BUILD.md | grep -qiE '
   || fail "docs are not UTF-8/ASCII"
 
 if [[ -d src ]]; then
-  echo "== no live Maps / search / MCP in this unit =="
+  echo "== no live Maps / MCP in this unit =="
   if grep -RInE '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src >/dev/null; then
     fail "live HTTP client call detected; fixture adapter only"
   fi
@@ -47,9 +47,8 @@ if [[ -d src ]]; then
   fi
   [[ -f src/core/reviews.ts ]] || fail "missing src/core/reviews.ts"
   [[ -f src/core/hours.ts ]] || fail "missing src/core/hours.ts"
-  if [[ -f src/core/search.ts ]]; then
-    fail "search belongs in PR 4"
-  fi
+  [[ -f src/core/search.ts ]] || fail "missing src/core/search.ts"
+  [[ -f tests/search.test.ts ]] || fail "missing tests/search.test.ts"
   if [[ -d src/mcp ]]; then
     fail "MCP belongs in PR 5"
   fi

@@ -81,6 +81,34 @@ export type PlaceAddress = {
   formatted: string;
 };
 
+/** Compact hit from GET/POST /v1/search. */
+export type SearchHit = {
+  id: string;
+  name: string;
+  address: PlaceAddress;
+  location: { lat: number; lng: number } | null;
+  rating: { average: number | null; count: number | null };
+  categories: string[];
+  mapsUrl: string;
+};
+
+export type SearchBBox = {
+  west: number;
+  south: number;
+  east: number;
+  north: number;
+};
+
+export type SearchPage = {
+  query: {
+    q: string | null;
+    city: string | null;
+    bbox: SearchBBox | null;
+    limit: number;
+  };
+  results: SearchHit[];
+};
+
 /** Public place card from GET /v1/places/by-url and GET /v1/places/{id}. */
 export type Place = {
   id: string;
