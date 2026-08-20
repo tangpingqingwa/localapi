@@ -1,7 +1,7 @@
 import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import { tryCharge } from "../../billing/charge.js";
 import { PlaceError } from "../../core/errors.js";
-import { searchCredits, searchPlaces, type SearchInput } from "../../core/search.js";
+import { searchCredits, type SearchInput } from "../../core/search.js";
 import { requireAuth } from "../auth.js";
 import { sendErr, sendOk } from "../envelope.js";
 
@@ -51,7 +51,7 @@ async function handleSearch(
   }
   const started = Date.now();
   try {
-    const page = searchPlaces(input);
+    const page = await request.server.adapter.searchPlaces(input);
     const credits = searchCredits(page.results.length);
     const charged = tryCharge(request.server.db, key, credits, SEARCH_PATH);
     if (!charged.ok) {

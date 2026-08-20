@@ -11,6 +11,8 @@ US + UK fixtures only. UI of any future site **must not** clone Google Maps chro
 
 Node 22, Fastify, SQLite, fixture JSON for 30 places. Our ids `plc_…` — never require customers to send Google `place_id`.
 
+Default adapter is fixtures. Live Maps/Places is env-gated (`LOCALAPI_LIVE=1` + `LOCALAPI_MAPS_API_KEY`) and must not run in CI.
+
 ---
 
 ## 2. Identity
@@ -64,4 +66,12 @@ Daily cap on key: default free 50 / paid 500. Exceed → `daily_cap` 429.
 - **Dependencies:** PR 4
 - **Tools:** get_place, list_reviews, search_places — wrap `core/*` 1:1. Fixtures only.
 
-No photo CDN in any PR. Omit photos in v1.
+### GA: live Maps/places adapter (env-gated)
+- **Files:** `src/adapters/maps/*`, `src/core/adapter.ts`, `src/core/place-index.ts`
+- **Dependencies:** PR 5
+- **Gate:** `LOCALAPI_LIVE=1`. Default remains the 30-place fixture adapter.
+- **CI:** `scripts/test.sh` stays offline. Live `fetch` is never required for green.
+- Failures map to SPEC (`place_not_found`, `region_unsupported`, `upstream_blocked`, `invalid_place_url`). 0 credits.
+- Same Maps URL always hashes to the same `plc_`. Never invent place ids or reviews.
+
+No photo CDN in any PR. Omit photos in v1. Do not start a Dockerfile in this unit.

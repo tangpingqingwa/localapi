@@ -56,6 +56,16 @@ Credits against Google’s official bill. The pitch is not “illegal Places.”
 
 Success: 10 paying local-SEO or agent customers; support tickets are about fields, not about empty payloads; proxy < 25% of revenue.
 
+## Adapters
+
+Default is the 30-place US/UK fixture catalog. Live Google Places is opt-in:
+
+```bash
+LOCALAPI_LIVE=1 LOCALAPI_MAPS_API_KEY=... npm start
+```
+
+CI and `bash scripts/test.sh` never set `LOCALAPI_LIVE`. Failures (`place_not_found`, `region_unsupported`, `upstream_blocked`) charge 0 credits. Same Maps URL always hashes to the same `plc_`. No photos, no photo CDN.
+
 ## Will not do
 
 - No directions, no live traffic, no Street View

@@ -414,10 +414,10 @@ test("HTTP and MCP call core only and never import fixtures or photos", () => {
     assert.doesNotMatch(src, /photo(s|Url|CDN)?\b/, file);
   }
   const tools = readFileSync(join(ROOT, "src/mcp/tools.ts"), "utf8");
-  assert.match(tools, /getPlaceByUrl/);
-  assert.match(tools, /getPlaceById/);
-  assert.match(tools, /getReviewPage/);
-  assert.match(tools, /searchPlaces/);
+  assert.match(tools, /input\.adapter\.getPlaceByUrl/);
+  assert.match(tools, /input\.adapter\.getPlaceById/);
+  assert.match(tools, /input\.adapter\.getReviewPage/);
+  assert.match(tools, /input\.adapter\.searchPlaces/);
 });
 
 test("no live Maps hosts are fetched from MCP sources", () => {

@@ -52,6 +52,23 @@ test("loadConfig requires LOCALAPI_DATABASE in production", () => {
   });
   assert.equal(config.databasePath, "/tmp/localapi.sqlite");
   assert.equal(config.bootstrapKey, "lk_test_dev");
+  assert.equal(config.mapsAdapter, "fixture");
+  assert.equal(config.mapsApiKey, undefined);
+});
+
+test("loadConfig defaults to fixture adapter and gates live Maps", () => {
+  const unset = loadConfig({});
+  assert.equal(unset.mapsAdapter, "fixture");
+  assert.throws(
+    () => loadConfig({ LOCALAPI_LIVE: "1" }),
+    /LOCALAPI_MAPS_API_KEY is required when LOCALAPI_LIVE=1/,
+  );
+  const live = loadConfig({
+    LOCALAPI_LIVE: "1",
+    LOCALAPI_MAPS_API_KEY: "test-places-key",
+  });
+  assert.equal(live.mapsAdapter, "live");
+  assert.equal(live.mapsApiKey, "test-places-key");
 });
 
 test("createKey stores a hash and lookupKey finds the row", () => {
