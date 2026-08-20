@@ -210,7 +210,15 @@ function compareHits(a: PlaceFixture, b: PlaceFixture): number {
   return a.name.localeCompare(b.name);
 }
 
-export function searchPlaces(input: SearchInput = {}): SearchPage {
+export type ParsedSearchRequest = {
+  q: string | null;
+  city: string | null;
+  bbox: BBox | null;
+  limit: number;
+};
+
+/** Shared validation for fixture and live search. Failures charge 0. */
+export function parseSearchRequest(input: SearchInput = {}): ParsedSearchRequest {
   const qRaw = typeof input.q === "string" ? input.q.trim() : "";
   const cityRaw = typeof input.city === "string" ? input.city.trim() : "";
   const q = qRaw === "" ? null : qRaw;
@@ -233,6 +241,11 @@ export function searchPlaces(input: SearchInput = {}): SearchPage {
   if (limit === null) {
     throw new PlaceError("invalid_request", "limit must be a positive integer.");
   }
+  return { q, city, bbox: resolvedBbox, limit };
+}
+
+export function searchPlaces(input: SearchInput = {}): SearchPage {
+  const { q, city, bbox: resolvedBbox, limit } = parseSearchRequest(input);
 
   const matched = loadPlaceFixtures()
     .filter((fixture) => matchesCity(fixture, city))

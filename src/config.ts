@@ -1,11 +1,15 @@
 const DEFAULT_PORT = 3000;
 const DEFAULT_DATABASE_PATH = "./data/localapi.sqlite";
 
+export type MapsAdapterMode = "fixture" | "live";
+
 export type AppConfig = {
   port: number;
   databasePath: string;
   bootstrapKey: string | undefined;
   nodeEnv: string;
+  mapsAdapter: MapsAdapterMode;
+  mapsApiKey: string | undefined;
 };
 
 export function parseListenPort(value = process.env.PORT): number {
@@ -26,6 +30,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     throw new Error("LOCALAPI_DATABASE is required in production");
   }
   const bootstrapKey = env.LOCALAPI_BOOTSTRAP_KEY;
+  const live = env.LOCALAPI_LIVE === "1" || env.LOCALAPI_LIVE === "true";
+  const mapsApiKey = env.LOCALAPI_MAPS_API_KEY;
+  if (live && (mapsApiKey === undefined || mapsApiKey.trim() === "")) {
+    throw new Error("LOCALAPI_MAPS_API_KEY is required when LOCALAPI_LIVE=1");
+  }
   return {
     port: parseListenPort(env.PORT),
     databasePath:
@@ -35,5 +44,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     bootstrapKey:
       bootstrapKey !== undefined && bootstrapKey !== "" ? bootstrapKey : undefined,
     nodeEnv,
+    mapsAdapter: live ? "live" : "fixture",
+    mapsApiKey:
+      mapsApiKey !== undefined && mapsApiKey !== "" ? mapsApiKey : undefined,
   };
 }

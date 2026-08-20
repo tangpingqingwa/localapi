@@ -2,7 +2,12 @@
 # Offline gate for main. Must exit 0 on a clean clone with no secrets.
 # Contract checks stay; once package.json exists we also typecheck and run
 # node:test. Do not require live third-party networks (no Google / Maps).
+# Live Maps adapter is env-gated (LOCALAPI_LIVE=1) and must not run here.
 set -euo pipefail
+
+unset LOCALAPI_LIVE || true
+unset LOCALAPI_MAPS_API_KEY || true
+export LOCALAPI_LIVE=0
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$root"
@@ -38,20 +43,30 @@ file -b --mime-encoding README.md SPEC.md CONTRIBUTING.md BUILD.md | grep -qiE '
   || fail "docs are not UTF-8/ASCII"
 
 if [[ -d src ]]; then
-  echo "== no live Maps =="
-  if grep -RInE '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src >/dev/null; then
-    fail "live HTTP client call detected; fixture adapter only"
+  echo "== no live Maps in CI default path =="
+  [[ -f src/adapters/maps/fixture.ts ]] || fail "missing fixture adapter"
+  [[ -f src/adapters/maps/live.ts ]] || fail "missing live Maps adapter"
+  [[ -f src/core/adapter.ts ]] || fail "missing PlacesAdapter contract"
+  grep -q 'LOCALAPI_LIVE' src/adapters/index.ts \
+    || fail "adapter selection must be env-gated on LOCALAPI_LIVE"
+  # fetch / Places hosts are allowed only inside the env-gated live adapter.
+  if grep -RInE --exclude-dir=adapters '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src >/dev/null; then
+    fail "live HTTP client call outside src/adapters"
   fi
-  if grep -RInE 'maps\.googleapis\.com|places\.googleapis\.com' src >/dev/null; then
-    fail "live Maps/Places host detected"
+  if grep -RInE --exclude-dir=adapters 'maps\.googleapis\.com|places\.googleapis\.com' src >/dev/null; then
+    fail "live Maps/Places host outside src/adapters"
+  fi
+  if grep -RInE '(^|[^[:alnum:]_])(fetch|axios|got|undici)[[:space:]]*\(' src/adapters/maps/fixture.ts >/dev/null; then
+    fail "fixture adapter must not open a network socket"
   fi
   [[ -f src/core/reviews.ts ]] || fail "missing src/core/reviews.ts"
   [[ -f src/core/hours.ts ]] || fail "missing src/core/hours.ts"
   [[ -f src/core/search.ts ]] || fail "missing src/core/search.ts"
   [[ -f tests/search.test.ts ]] || fail "missing tests/search.test.ts"
+  [[ -f tests/live-maps.test.ts ]] || fail "missing tests/live-maps.test.ts"
   if [[ -d src/http ]]; then
     if grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/' src/http >/dev/null; then
-      fail "HTTP layer must call core/* only"
+      fail "HTTP layer must not import adapters or fixtures"
     fi
     grep -RInE 'from ["'\''][^"'\'']*core/' src/http >/dev/null \
       || fail "HTTP layer must import from core/*"
@@ -73,7 +88,7 @@ grep -q 'When not to call' llms.txt || fail "llms.txt missing when-not-to-call"
 grep -qi 'not for navigation' llms.txt || fail "llms.txt missing navigation disclaimer"
 grep -qi 'impersonate' llms.txt || fail "llms.txt missing impersonation disclaimer"
 if grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/' src/mcp >/dev/null; then
-  fail "MCP layer must call core/* only"
+  fail "MCP layer must not import adapters or fixtures"
 fi
 grep -RInE 'from ["'\''][^"'\'']*core/' src/mcp >/dev/null \
   || fail "MCP layer must import from core/*"
@@ -131,6 +146,9 @@ if [[ -f package.json ]]; then
 
   echo "== unit tests =="
   # Quoted so bash 3.2 does not eat **; Node 22's test runner expands the glob.
+  # Fixture adapter only — never hit live Maps / Places.
+  export LOCALAPI_LIVE=0
+  unset LOCALAPI_MAPS_API_KEY || true
   test_log="$(mktemp)"
   trap 'rm -f "$test_log"' EXIT
   set +e

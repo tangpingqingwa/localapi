@@ -229,3 +229,5 @@ Full process: [CONTRIBUTING.md](./CONTRIBUTING.md).
 Implementation plan (stack, modules, PR DAG): [BUILD.md](./BUILD.md).
 
 Until there is an application binary, `scripts/test.sh` still has to pass: contract files exist, SPEC/CONTRIBUTING agree, no tracked secrets. Adding a server or CLI means **extending** that script with unit/contract tests. Live upstream calls are optional and must not be required for `main` to stay green.
+
+Default place lookup is the 30-place fixture adapter. A live Maps/Places adapter may be enabled with `LOCALAPI_LIVE=1` and `LOCALAPI_MAPS_API_KEY`; it is never required for CI. Failures still charge 0 credits. Same URL always produces the same `plc_` hash. Never invent a place id or a review.

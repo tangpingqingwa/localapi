@@ -1,9 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import { tryChargeOrPaymentRequired } from "../../billing/charge.js";
 import { PlaceError } from "../../core/errors.js";
-import { getHoursByPlaceId } from "../../core/hours.js";
-import { getPlaceById, getPlaceByUrl } from "../../core/place.js";
-import { getReviewPage } from "../../core/reviews.js";
 import { requireAuth } from "../auth.js";
 import { sendErr, sendOk } from "../envelope.js";
 
@@ -30,7 +27,7 @@ export const placesRoutes: FastifyPluginAsync = async (app) => {
       }
       const started = Date.now();
       try {
-        const place = getPlaceByUrl(request.query.url ?? "");
+        const place = await request.server.adapter.getPlaceByUrl(request.query.url ?? "");
         const charged = tryChargeOrPaymentRequired(
           request.server.db,
           key,
@@ -68,7 +65,7 @@ export const placesRoutes: FastifyPluginAsync = async (app) => {
       }
       const started = Date.now();
       try {
-        const place = getPlaceById(request.params.id);
+        const place = await request.server.adapter.getPlaceById(request.params.id);
         const charged = tryChargeOrPaymentRequired(
           request.server.db,
           key,
@@ -106,7 +103,7 @@ export const placesRoutes: FastifyPluginAsync = async (app) => {
       }
       const started = Date.now();
       try {
-        const page = getReviewPage(request.params.id, {
+        const page = await request.server.adapter.getReviewPage(request.params.id, {
           page: request.query.page,
           lang: request.query.lang,
         });
@@ -147,7 +144,7 @@ export const placesRoutes: FastifyPluginAsync = async (app) => {
       }
       const started = Date.now();
       try {
-        const hours = getHoursByPlaceId(request.params.id);
+        const hours = await request.server.adapter.getHoursByPlaceId(request.params.id);
         const charged = tryChargeOrPaymentRequired(
           request.server.db,
           key,

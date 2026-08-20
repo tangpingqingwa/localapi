@@ -72,7 +72,7 @@ export const mcpRoutes: FastifyPluginAsync = async (app) => {
       return reply.status(202).send();
     }
 
-    const result = dispatch(request, {
+    const result = await dispatch(request, {
       ...rpc.request,
       id: rpc.request.id,
     });
@@ -80,10 +80,10 @@ export const mcpRoutes: FastifyPluginAsync = async (app) => {
   });
 };
 
-function dispatch(
+async function dispatch(
   request: FastifyRequest,
   rpc: JsonRpcRequest & { id: JsonRpcId },
-): JsonRpcSuccess | JsonRpcError {
+): Promise<JsonRpcSuccess | JsonRpcError> {
   switch (rpc.method) {
     case "initialize":
       return ok(rpc.id, {
@@ -97,16 +97,16 @@ function dispatch(
     case "tools/list":
       return ok(rpc.id, { tools: MCP_TOOLS });
     case "tools/call":
-      return callTool(request, rpc);
+      return await callTool(request, rpc);
     default:
       return rpcError(rpc.id, -32601, `Method not found: ${rpc.method}`);
   }
 }
 
-function callTool(
+async function callTool(
   request: FastifyRequest,
   rpc: JsonRpcRequest & { id: JsonRpcId },
-): JsonRpcSuccess | JsonRpcError {
+): Promise<JsonRpcSuccess | JsonRpcError> {
   const key = request.apiKey;
   if (key === undefined) {
     return rpcError(rpc.id, -32603, "Authenticated route missing key.");
@@ -116,11 +116,12 @@ function callTool(
     return rpcError(rpc.id, -32602, parsed.message);
   }
 
-  const outcome = callMcpTool({
+  const outcome = await callMcpTool({
     name: parsed.name,
     args: parsed.args,
     db: request.server.db,
     key,
+    adapter: request.server.adapter,
     requestId: newRequestId(),
   });
   return ok(rpc.id, toolResult(outcome));

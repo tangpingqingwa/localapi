@@ -1,5 +1,8 @@
 import Fastify, { type FastifyInstance } from "fastify";
+import { createAppAdapter } from "./adapters/index.js";
 import { bootstrapKeyIfEmpty } from "./billing/keys.js";
+import type { PlacesAdapter } from "./core/adapter.js";
+import { createSqlitePlaceIndex } from "./core/place-index.js";
 import { openDatabase, type LocalApiDb } from "./db.js";
 import { healthRoutes } from "./http/routes/health.js";
 import { meRoutes } from "./http/routes/me.js";
@@ -12,6 +15,7 @@ export type BuildAppOptions = {
   db?: LocalApiDb;
   databasePath?: string;
   bootstrapKey?: string;
+  adapter?: PlacesAdapter;
 };
 
 export async function buildApp(
@@ -23,7 +27,13 @@ export async function buildApp(
   if (options.bootstrapKey !== undefined) {
     bootstrapKeyIfEmpty(db, options.bootstrapKey);
   }
+  const adapter =
+    options.adapter ??
+    createAppAdapter({
+      placeIndex: createSqlitePlaceIndex(db),
+    });
   app.decorate("db", db);
+  app.decorate("adapter", adapter);
   app.decorateRequest("apiKey", undefined);
   if (ownsDb) {
     app.addHook("onClose", async (instance) => {
