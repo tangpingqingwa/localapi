@@ -59,10 +59,9 @@ test("loadConfig requires LOCALAPI_DATABASE in production", () => {
 test("loadConfig defaults to fixture adapter and gates live Maps", () => {
   const unset = loadConfig({});
   assert.equal(unset.mapsAdapter, "fixture");
-  assert.throws(
-    () => loadConfig({ LOCALAPI_LIVE: "1" }),
-    /LOCALAPI_MAPS_API_KEY is required when LOCALAPI_LIVE=1/,
-  );
+  const publicLive = loadConfig({ LOCALAPI_LIVE: "1" });
+  assert.equal(publicLive.mapsAdapter, "live");
+  assert.equal(publicLive.mapsApiKey, undefined);
   const live = loadConfig({
     LOCALAPI_LIVE: "1",
     LOCALAPI_MAPS_API_KEY: "test-places-key",

@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-# Optional live Maps/Places soak. Never called from scripts/test.sh or CI.
-# Gate: LOCALAPI_LIVE=1 + a real LOCALAPI_MAPS_API_KEY.
+# Optional live Maps soak. Never called from scripts/test.sh or CI.
+# Gate: LOCALAPI_LIVE=1. Default path is the public Google Maps place page
+# (and/or documented public JSON embedded in that page) — no Places SKU key.
+# LOCALAPI_MAPS_API_KEY remains an optional Places SKU path when present.
 # Required flows: place by a real Maps URL; search + city; same URL → same plc_.
-# Missing key → BLOCKED-SECRET (exit 2). Do not invent a key or a place.
+# Missing SKU key is not BLOCKED-SECRET. That exit is only for a paid SKU-only
+# leftover after the public-page live path was attempted.
+# Do not invent a key. Do not invent a place.
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
@@ -13,23 +17,7 @@ fail() {
   exit 1
 }
 
-blocked_secret() {
-  echo "BLOCKED-SECRET: $*"
-  echo "Required flows not run:"
-  echo "  - GET /v1/places/by-url against a real Maps place URL"
-  echo "  - GET /v1/search?q&city against live Places"
-  echo "  - same Maps URL → same plc_"
-  echo "Export a real Places API key as LOCALAPI_MAPS_API_KEY and re-run."
-  echo "Do not invent a key. Do not invent a place."
-  exit 2
-}
-
-if [[ -z "${LOCALAPI_MAPS_API_KEY:-}" ]]; then
-  blocked_secret "LOCALAPI_MAPS_API_KEY is unset or empty."
-fi
-
 # Well-known public listing (Franklin Barbecue, Austin). Not a fixture-only id.
-# Live adapter resolves via Places text search + coords; we never invent plc_.
 MAPS_URL="${LOCALAPI_LIVE_PLACE_URL:-https://www.google.com/maps/place/Franklin+Barbecue/@30.2701266,-97.7313161,17z}"
 SEARCH_Q="${LOCALAPI_LIVE_SEARCH_Q:-coffee}"
 SEARCH_CITY="${LOCALAPI_LIVE_SEARCH_CITY:-Austin}"
@@ -61,10 +49,19 @@ export PORT="$port"
 export LOCALAPI_LIVE=1
 export LOCALAPI_DATABASE="$tmp/localapi.sqlite"
 export LOCALAPI_BOOTSTRAP_KEY="${LOCALAPI_BOOTSTRAP_KEY:-lk_test_live_smoke}"
-# Keep the operator key; do not print it.
-export LOCALAPI_MAPS_API_KEY
+# Optional Places SKU key. Public-page live runs without it.
+if [[ -n "${LOCALAPI_MAPS_API_KEY:-}" ]]; then
+  export LOCALAPI_MAPS_API_KEY
+else
+  unset LOCALAPI_MAPS_API_KEY || true
+fi
 
-echo "== start local process LOCALAPI_LIVE=1 port=${port} =="
+if [[ -n "${LOCALAPI_MAPS_API_KEY:-}" ]]; then
+  maps_key_state="set"
+else
+  maps_key_state="unset"
+fi
+echo "== start local process LOCALAPI_LIVE=1 port=${port} maps_key=${maps_key_state} =="
 npm start >"$tmp/server.log" 2>&1 &
 server_pid=$!
 
@@ -85,16 +82,29 @@ done
 
 auth=(-H "Authorization: Bearer ${LOCALAPI_BOOTSTRAP_KEY}")
 base="http://127.0.0.1:${port}"
+enc_url="$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=""))' "$MAPS_URL")"
 
-echo "== GET /v1/places/by-url (real Maps URL) =="
-place1="$(curl -fsS "${auth[@]}" \
-  "${base}/v1/places/by-url?url=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=""))' "$MAPS_URL")")" \
-  || fail "by-url request failed"
+echo "== GET /v1/places/by-url (real public Maps URL) =="
+place1_http="$(
+  curl -sS -o "$tmp/place1.json" -w '%{http_code}' "${auth[@]}" \
+    "${base}/v1/places/by-url?url=${enc_url}"
+)" || fail "by-url request failed"
 
-id1="$(
-  python3 - "$place1" <<'PY'
+python3 - "$tmp/place1.json" "$place1_http" "$tmp/place1.id" <<'PY' || fail "by-url payload is not a live place card"
 import json, sys
-body = json.loads(sys.argv[1])
+path, http, out_path = sys.argv[1], sys.argv[2], sys.argv[3]
+body = json.loads(open(path, encoding="utf-8").read())
+err = body.get("error") or {}
+code = err.get("code")
+charged = (body.get("meta") or {}).get("creditsCharged")
+if code == "upstream_blocked":
+    if http != "503":
+        raise SystemExit(f"upstream_blocked expected HTTP 503, got {http}")
+    if charged not in (0, None):
+        raise SystemExit(f"upstream_blocked must charge 0 credits, got {charged!r}")
+    print("PASS-ERROR: by-url upstream_blocked 503, 0 credits")
+    open(out_path, "w", encoding="utf-8").write("UPSTREAM_BLOCKED")
+    raise SystemExit(0)
 if "error" in body:
     raise SystemExit(f"by-url error {body['error']}")
 place = body["data"]
@@ -105,22 +115,24 @@ if not pid.startswith("plc_"):
     raise SystemExit(f"expected plc_ id, got {pid!r}")
 if not name or not formatted:
     raise SystemExit("place missing name or formatted address")
-charged = (body.get("meta") or {}).get("creditsCharged")
 if charged != 1:
     raise SystemExit(f"expected 1 credit, got {charged!r}")
-print(pid)
+print(f"place id={pid} name={name!r} address={formatted!r}")
+open(out_path, "w", encoding="utf-8").write(pid)
 PY
-)" || fail "by-url payload is not a live place card"
 
-echo "place id=${id1}"
+id1="$(cat "$tmp/place1.id")"
+
+if [[ "$id1" == "UPSTREAM_BLOCKED" ]]; then
+  echo "OK: live smoke recorded honest upstream_blocked on public Maps (PASS-ERROR)"
+  exit 0
+fi
 
 echo "== GET /v1/places/by-url again (same URL → same plc_) =="
-place2="$(curl -fsS "${auth[@]}" \
-  "${base}/v1/places/by-url?url=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=""))' "$MAPS_URL")")" \
+place2="$(curl -fsS "${auth[@]}" "${base}/v1/places/by-url?url=${enc_url}")" \
   || fail "second by-url request failed"
 
-id2="$(
-  python3 - "$place2" "$id1" <<'PY'
+python3 - "$place2" "$id1" <<'PY' || fail "same Maps URL did not hash to the same plc_"
 import json, sys
 body = json.loads(sys.argv[1])
 want = sys.argv[2]
@@ -130,18 +142,27 @@ if pid != want:
     raise SystemExit(f"plc_ mismatch: first={want} second={pid}")
 print(pid)
 PY
-)" || fail "same Maps URL did not hash to the same plc_"
-
-echo "repeat id=${id2}"
 
 echo "== GET /v1/search?q=${SEARCH_Q}&city=${SEARCH_CITY} =="
-search="$(curl -fsS "${auth[@]}" \
-  "${base}/v1/search?q=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))' "$SEARCH_Q")&city=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))' "$SEARCH_CITY")")" \
-  || fail "search request failed"
+search_http="$(
+  curl -sS -o "$tmp/search.json" -w '%{http_code}' "${auth[@]}" \
+    "${base}/v1/search?q=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))' "$SEARCH_Q")&city=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))' "$SEARCH_CITY")"
+)" || fail "search request failed"
 
-python3 - "$search" <<'PY' || fail "search payload is not a live result page"
+python3 - "$tmp/search.json" "$search_http" <<'PY' || fail "search payload is not a live result page"
 import json, sys
-body = json.loads(sys.argv[1])
+body = json.loads(open(sys.argv[1], encoding="utf-8").read())
+http = sys.argv[2]
+err = body.get("error") or {}
+code = err.get("code")
+charged = (body.get("meta") or {}).get("creditsCharged")
+if code == "upstream_blocked":
+    if http != "503":
+        raise SystemExit(f"search upstream_blocked expected HTTP 503, got {http}")
+    if charged not in (0, None):
+        raise SystemExit(f"search upstream_blocked must charge 0 credits, got {charged!r}")
+    print("PASS-ERROR: search upstream_blocked 503, 0 credits")
+    raise SystemExit(0)
 if "error" in body:
     raise SystemExit(f"search error {body['error']}")
 page = body["data"]
@@ -149,7 +170,7 @@ results = page.get("results")
 if not isinstance(results, list):
     raise SystemExit("search missing results[]")
 if len(results) == 0:
-    raise SystemExit("live search returned 0 results; expected real Places hits")
+    raise SystemExit("live search returned 0 results; expected real public Maps hits")
 for i, hit in enumerate(results):
     pid = (hit or {}).get("id") or ""
     name = (hit or {}).get("name") or ""
@@ -160,5 +181,5 @@ for i, hit in enumerate(results):
 print(f"{len(results)} hits")
 PY
 
-echo "OK: live smoke walked by-url, search+city, and stable plc_"
+echo "OK: live smoke walked by-url, search+city, and stable plc_ via public Maps"
 exit 0

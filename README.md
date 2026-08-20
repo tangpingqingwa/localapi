@@ -58,15 +58,15 @@ Success: 10 paying local-SEO or agent customers; support tickets are about field
 
 ## Adapters
 
-Default is the 30-place US/UK fixture catalog. Live Google Places is opt-in:
+Default is the 30-place US/UK fixture catalog. Live public Maps pages are opt-in:
 
 ```bash
-LOCALAPI_LIVE=1 LOCALAPI_MAPS_API_KEY=... npm start
+LOCALAPI_LIVE=1 npm start
 ```
 
-CI and `bash scripts/test.sh` never set `LOCALAPI_LIVE`. Failures (`place_not_found`, `region_unsupported`, `upstream_blocked`) charge 0 credits. Same Maps URL always hashes to the same `plc_`. No photos, no photo CDN.
+`LOCALAPI_MAPS_API_KEY` is optional (Places SKU path). CI and `bash scripts/test.sh` never set `LOCALAPI_LIVE`. Failures (`place_not_found`, `region_unsupported`, `upstream_blocked`) charge 0 credits. Same Maps URL always hashes to the same `plc_`. No photos, no photo CDN.
 
-Optional soak (not CI): `bash scripts/live-smoke.sh` needs a real `LOCALAPI_MAPS_API_KEY`. Record: [docs/live-smoke.md](./docs/live-smoke.md). Missing key is `BLOCKED-SECRET` — do not invent a key or a place.
+Optional soak (not CI): `bash scripts/live-smoke.sh` hits a real public Maps URL with `LOCALAPI_LIVE=1`. Record: [docs/live-smoke.md](./docs/live-smoke.md). Do not invent a key or a place.
 
 ## One-box deploy
 
