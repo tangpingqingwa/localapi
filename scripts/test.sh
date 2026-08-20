@@ -99,6 +99,41 @@ if grep -RInE --include='*.ts' 'maps\.googleapis\.com|places\.googleapis\.com' s
   fail "src/mcp must not call live Maps/Places hosts"
 fi
 
+echo "== deploy artifacts (Dockerfile + runbook) =="
+[[ -f Dockerfile ]] || fail "missing Dockerfile"
+[[ -f .env.example ]] || fail "missing .env.example"
+[[ -f deploy/runbook.md ]] || fail "missing deploy/runbook.md"
+grep -q 'node:22' Dockerfile || fail "Dockerfile must use Node 22"
+grep -qE '^USER[[:space:]]+node$' Dockerfile || fail "Dockerfile must run as non-root USER node"
+grep -q 'PORT' Dockerfile || fail "Dockerfile must honor PORT"
+grep -q 'src/server.ts' Dockerfile || fail "Dockerfile must start src/server.ts"
+if grep -E 'LOCALAPI_LIVE[[:space:]]*=[[:space:]]*(1|true)' Dockerfile >/dev/null; then
+  fail "Dockerfile must not enable live Maps"
+fi
+if grep -E 'LOCALAPI_MAPS_API_KEY[[:space:]]*=' Dockerfile >/dev/null; then
+  fail "Dockerfile must not bake LOCALAPI_MAPS_API_KEY"
+fi
+grep -q 'LOCALAPI_LIVE' .env.example || fail ".env.example missing LOCALAPI_LIVE"
+grep -q 'LOCALAPI_MAPS_API_KEY' .env.example || fail ".env.example missing LOCALAPI_MAPS_API_KEY"
+grep -q 'LOCALAPI_DATABASE' .env.example || fail ".env.example missing LOCALAPI_DATABASE"
+grep -q 'LOCALAPI_BOOTSTRAP_KEY' .env.example || fail ".env.example missing LOCALAPI_BOOTSTRAP_KEY"
+if grep -E '^[[:space:]]*LOCALAPI_LIVE=1[[:space:]]*$' .env.example >/dev/null; then
+  fail ".env.example must not default live Maps on"
+fi
+if grep -E '^[[:space:]]*LOCALAPI_BOOTSTRAP_KEY=lk_(live|test)_' .env.example >/dev/null; then
+  fail ".env.example must not ship a real bootstrap key"
+fi
+if grep -E '^[[:space:]]*LOCALAPI_MAPS_API_KEY=.+' .env.example >/dev/null; then
+  fail ".env.example must not ship a Maps API key"
+fi
+grep -q '/healthz' deploy/runbook.md || fail "runbook missing /healthz"
+grep -q 'LOCALAPI_LIVE' deploy/runbook.md || fail "runbook missing live Maps enablement"
+grep -q 'docker build' deploy/runbook.md || fail "runbook missing docker build"
+grep -q 'docker run' deploy/runbook.md || fail "runbook missing docker run"
+if grep -qE 'docker-compose|compose\.ya?ml' Dockerfile deploy/runbook.md >/dev/null 2>&1; then
+  fail "one-box deploy is Dockerfile only; do not add docker-compose"
+fi
+
 if [[ -f fixtures/places.json ]]; then
   echo "== fixture catalog =="
   python3 - "$root/fixtures/places.json" <<'PY' || fail "fixtures/places.json is not 30 valid US/UK places"
