@@ -11,7 +11,7 @@ US + UK fixtures only. UI of any future site **must not** clone Google Maps chro
 
 Node 22, Fastify, SQLite, fixture JSON for 30 places. Our ids `plc_…` — never require customers to send Google `place_id`.
 
-Default adapter is fixtures. Live Maps/Places is env-gated (`LOCALAPI_LIVE=1` + `LOCALAPI_MAPS_API_KEY`) and must not run in CI.
+Default adapter is fixtures. Live Maps is env-gated (`LOCALAPI_LIVE=1`) and must not run in CI. Public Maps place pages work without a Places key; `LOCALAPI_MAPS_API_KEY` is an optional Places SKU path.
 
 ---
 
@@ -77,13 +77,14 @@ Daily cap on key: default free 50 / paid 500. Exceed → `daily_cap` 429.
 ### GA: Dockerfile + one-VPS runbook
 - **Files:** `Dockerfile`, `.env.example`, `deploy/runbook.md`
 - **Dependencies:** live Maps/places adapter
-- **Acceptance:** Node 22, non-root, listen on `$PORT`; live Maps stays off until the operator sets `LOCALAPI_LIVE=1` + `LOCALAPI_MAPS_API_KEY`; CI stays offline
+- **Acceptance:** Node 22, non-root, listen on `$PORT`; live Maps stays off until the operator sets `LOCALAPI_LIVE=1`; CI stays offline
 
 ### GA: live Maps smoke (optional, not CI)
 - **Files:** `scripts/live-smoke.sh`, `docs/live-smoke.md`
 - **Dependencies:** live Maps/places adapter
-- **Gate:** `LOCALAPI_LIVE=1` + `LOCALAPI_MAPS_API_KEY`. Missing key → `BLOCKED-SECRET`.
+- **Gate:** `LOCALAPI_LIVE=1`. Public Maps place page (default Franklin Barbecue Austin) — no Places key required. `LOCALAPI_MAPS_API_KEY` remains optional SKU path.
 - **Flows:** place by a real Maps URL; search + city; same URL → same `plc_`.
-- **CI:** never called from `scripts/test.sh` or Actions. Do not invent a key or a place.
+- **Failures:** bot wall / captcha / unparseable HTML → `upstream_blocked` 503, 0 credits (PASS-ERROR). Invented rows are FAIL.
+- **CI:** never called from `scripts/test.sh` or Actions. Do not invent a key or a place. Missing SKU key is not `BLOCKED-SECRET`.
 
 No photo CDN in any PR. Omit photos in v1.

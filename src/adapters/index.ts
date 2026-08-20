@@ -26,11 +26,8 @@ export function createAppAdapter(options: CreateAppAdapterOptions = {}): PlacesA
     return createFixtureAdapter();
   }
   const apiKey = env[LIVE_API_KEY_ENV];
-  if (apiKey === undefined || apiKey.trim() === "") {
-    throw new Error("LOCALAPI_MAPS_API_KEY is required when LOCALAPI_LIVE=1");
-  }
   return createLiveMapsAdapter({
-    apiKey,
+    apiKey: apiKey !== undefined && apiKey.trim() !== "" ? apiKey : undefined,
     placeIndex: options.placeIndex,
   });
 }

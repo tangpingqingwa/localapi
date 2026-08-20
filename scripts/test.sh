@@ -3,6 +3,7 @@
 # Contract checks stay; once package.json exists we also typecheck and run
 # node:test. Do not require live third-party networks (no Google / Maps).
 # Live Maps adapter is env-gated (LOCALAPI_LIVE=1) and must not run here.
+# Never set LOCALAPI_LIVE in Actions. Public-page live is still not CI.
 set -euo pipefail
 
 unset LOCALAPI_LIVE || true
@@ -64,6 +65,15 @@ if [[ -d src ]]; then
   [[ -f src/core/search.ts ]] || fail "missing src/core/search.ts"
   [[ -f tests/search.test.ts ]] || fail "missing tests/search.test.ts"
   [[ -f tests/live-maps.test.ts ]] || fail "missing tests/live-maps.test.ts"
+  [[ -f tests/public-maps-parse.test.ts ]] || fail "missing tests/public-maps-parse.test.ts"
+  [[ -f src/adapters/maps/public-page.ts ]] || fail "missing public Maps page parser"
+  [[ -d tests/fixtures/maps ]] || fail "missing tests/fixtures/maps snippets"
+  if grep -RInE 'LOCALAPI_LIVE[[:space:]]*=[[:space:]]*1' .github >/dev/null 2>&1; then
+    fail "CI must not set LOCALAPI_LIVE=1"
+  fi
+  if grep -E 'scripts/live-smoke|bash[[:space:]]+scripts/live-smoke' .github/workflows/ci.yml >/dev/null; then
+    fail "CI must not invoke scripts/live-smoke.sh"
+  fi
   if [[ -d src/http ]]; then
     if grep -RInE 'from ["'\''](\.\./)*adapters/|from ["'\''][^"'\'']*fixtures/' src/http >/dev/null; then
       fail "HTTP layer must not import adapters or fixtures"

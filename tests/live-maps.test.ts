@@ -86,6 +86,7 @@ function recordedFetch(handlers: {
   get?: GooglePlace | { status: number };
   search?: unknown | { status: number };
   shorts?: Record<string, string>;
+  publicPages?: Record<string, { status?: number; body: string; url?: string }>;
 }): LiveFetch {
   return async (input, init) => {
     const url = new URL(input);
@@ -98,6 +99,19 @@ function recordedFetch(handlers: {
         status: 200,
         url: dest,
         json: async () => ({}),
+        text: async () => "",
+      };
+    }
+    if (url.hostname === "www.google.com" || url.hostname === "google.com" || url.hostname === "maps.google.com") {
+      const page = handlers.publicPages?.[input] ?? handlers.publicPages?.[url.toString()];
+      if (page === undefined) {
+        throw new Error(`unexpected public Maps URL ${input}`);
+      }
+      return {
+        status: page.status ?? 200,
+        url: page.url ?? input,
+        json: async () => JSON.parse(page.body.replace(/^\)\]\}'\s*/, "")),
+        text: async () => page.body,
       };
     }
     if (url.hostname !== "places.googleapis.com") {
@@ -140,10 +154,8 @@ test("createAppAdapter defaults to fixture and ignores a Maps key", () => {
   assert.equal(isLiveMapsEnabled({}), false);
   assert.equal(isLiveMapsEnabled({ LOCALAPI_LIVE: "0" }), false);
   assert.equal(isLiveMapsEnabled({ LOCALAPI_LIVE: "1" }), true);
-  assert.throws(
-    () => createAppAdapter({ env: { LOCALAPI_LIVE: "1" } }),
-    /LOCALAPI_MAPS_API_KEY is required/,
-  );
+  const publicLive = createAppAdapter({ env: { LOCALAPI_LIVE: "1" } });
+  assert.equal(publicLive.kind, "live");
   const live = createAppAdapter({
     env: { LOCALAPI_LIVE: "1", LOCALAPI_MAPS_API_KEY: "test-places-key" },
   });

@@ -32,9 +32,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const bootstrapKey = env.LOCALAPI_BOOTSTRAP_KEY;
   const live = env.LOCALAPI_LIVE === "1" || env.LOCALAPI_LIVE === "true";
   const mapsApiKey = env.LOCALAPI_MAPS_API_KEY;
-  if (live && (mapsApiKey === undefined || mapsApiKey.trim() === "")) {
-    throw new Error("LOCALAPI_MAPS_API_KEY is required when LOCALAPI_LIVE=1");
-  }
   return {
     port: parseListenPort(env.PORT),
     databasePath:
