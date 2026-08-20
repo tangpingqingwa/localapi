@@ -79,4 +79,11 @@ Daily cap on key: default free 50 / paid 500. Exceed → `daily_cap` 429.
 - **Dependencies:** live Maps/places adapter
 - **Acceptance:** Node 22, non-root, listen on `$PORT`; live Maps stays off until the operator sets `LOCALAPI_LIVE=1` + `LOCALAPI_MAPS_API_KEY`; CI stays offline
 
+### GA: live Maps smoke (optional, not CI)
+- **Files:** `scripts/live-smoke.sh`, `docs/live-smoke.md`
+- **Dependencies:** live Maps/places adapter
+- **Gate:** `LOCALAPI_LIVE=1` + `LOCALAPI_MAPS_API_KEY`. Missing key → `BLOCKED-SECRET`.
+- **Flows:** place by a real Maps URL; search + city; same URL → same `plc_`.
+- **CI:** never called from `scripts/test.sh` or Actions. Do not invent a key or a place.
+
 No photo CDN in any PR. Omit photos in v1.
