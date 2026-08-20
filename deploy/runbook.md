@@ -53,6 +53,8 @@ curl -fsS -H "Authorization: Bearer $LOCALAPI_BOOTSTRAP_KEY" \
 4. Failures map to SPEC (`invalid_place_url`, `place_not_found`, `region_unsupported`, `upstream_blocked`) and charge 0 credits. Never invent a place id or a review.
 5. Leave the flag unset in CI. `scripts/test.sh` unsets `LOCALAPI_LIVE` / `LOCALAPI_MAPS_API_KEY`.
 
+Optional soak after enable: `bash scripts/live-smoke.sh` (record in [docs/live-smoke.md](../docs/live-smoke.md)). Needs the real Places key in the environment. Missing key is `BLOCKED-SECRET`. Not part of CI.
+
 Roll back: set `LOCALAPI_LIVE=0` (or unset) and recreate. Do not run live Maps from CI.
 
 ## Data
