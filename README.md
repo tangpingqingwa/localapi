@@ -66,6 +66,10 @@ LOCALAPI_LIVE=1 LOCALAPI_MAPS_API_KEY=... npm start
 
 CI and `bash scripts/test.sh` never set `LOCALAPI_LIVE`. Failures (`place_not_found`, `region_unsupported`, `upstream_blocked`) charge 0 credits. Same Maps URL always hashes to the same `plc_`. No photos, no photo CDN.
 
+## One-box deploy
+
+`Dockerfile` + [`.env.example`](./.env.example). Operator steps: [deploy/runbook.md](./deploy/runbook.md). Live Maps stays off until `LOCALAPI_LIVE=1`.
+
 ## Will not do
 
 - No directions, no live traffic, no Street View

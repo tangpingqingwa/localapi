@@ -74,4 +74,9 @@ Daily cap on key: default free 50 / paid 500. Exceed → `daily_cap` 429.
 - Failures map to SPEC (`place_not_found`, `region_unsupported`, `upstream_blocked`, `invalid_place_url`). 0 credits.
 - Same Maps URL always hashes to the same `plc_`. Never invent place ids or reviews.
 
-No photo CDN in any PR. Omit photos in v1. Do not start a Dockerfile in this unit.
+### GA: Dockerfile + one-VPS runbook
+- **Files:** `Dockerfile`, `.env.example`, `deploy/runbook.md`
+- **Dependencies:** live Maps/places adapter
+- **Acceptance:** Node 22, non-root, listen on `$PORT`; live Maps stays off until the operator sets `LOCALAPI_LIVE=1` + `LOCALAPI_MAPS_API_KEY`; CI stays offline
+
+No photo CDN in any PR. Omit photos in v1.
